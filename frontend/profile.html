@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My account | VENORA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/extra.css">
+</head>
+<body>
+  <header class="header">
+    <a href="index.html" class="logo" aria-label="VENORA - Luxury Accessories">
+      <span class="logo-text">
+        <span class="logo-name">VENORA</span>
+        <span class="logo-tag">Luxury Accessories</span>
+      </span>
+    </a>
+
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="collection.html">Collection</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+
+    <div class="icons">
+      
+      <a href="login.html" title="Account" aria-label="Account">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20.5c.8-3.9 3.9-6 7.5-6s6.7 2.1 7.5 6"/></svg>
+      </a>
+      <a href="cart.html" title="Cart" aria-label="Cart">
+        <svg viewBox="0 0 24 24"><path d="M6 7.5h12a1 1 0 0 1 1 1V19a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8.5a1 1 0 0 1 1-1z"/><path d="M9 10.5V7a3 3 0 0 1 6 0v3.5"/></svg>
+      </a>
+    </div>
+  </header>
+
+  <main class="profile">
+    <div class="profile-head">
+      <div>
+        <h1 id="greet">My account</h1>
+        <p id="email" class="muted"></p>
+      </div>
+      <button class="btn" id="logoutBtn" type="button">Log out</button>
+    </div>
+
+    <section class="stats" id="stats"></section>
+
+    <h2 class="p-title">My orders</h2>
+    <div id="orders"><p class="muted">Loading...</p></div>
+  </main>
+
+  <footer class="footer">
+    <div class="f-brand">
+      <a href="index.html" class="logo" aria-label="VENORA">
+        <span class="logo-name">VENORA</span>
+        <span class="logo-tag">Luxury Accessories</span>
+      </a>
+      <p>Timeless pieces. Chosen with intention.<br>Made to be remembered.</p>
+    </div>
+
+    <div class="f-col">
+      <h4>Contact</h4>
+      <p><a href="mailto:hello@venora.com">hello@venora.com</a></p>
+      <p><a href="tel:+200000000000">+20 000 000 0000</a></p>
+      <p>Cairo, Egypt</p>
+    </div>
+
+    <div class="f-col">
+      <h4>Opening hours</h4>
+      <p>Saturday – Thursday</p>
+      <p>10:00 am – 8:00 pm</p>
+      <div class="socials">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/></svg></a>
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M14 8.5h2.5V5H14a3.5 3.5 0 0 0-3.5 3.5V11H8v3.5h2.5V21H14v-6.5h2.4l.6-3.5H14V8.8c0-.2.1-.3.3-.3z"/></svg></a>
+        <a href="https://wa.me/200000000000" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M4 20l1.2-4.2A8 8 0 1 1 8.4 18.8z"/><path d="M9.5 8.5c0 3 2.5 5.5 5.5 5.5l1-1.5-2-1-.8.8c-.8-.4-1.600-1.200-2-2l.8-.8-1-2z"/></svg></a>
+      </div>
+    </div>
+
+    <p class="copy">© 2025 VENORA. All rights reserved.</p>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script>
+    const CURRENCY = 'EGP'; // غيّري العملة هنا
+    const API = '/venora/backend/api/';
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const money = n => Number(n).toLocaleString(undefined, { maximumFractionDigits: 2 }) + ' ' + CURRENCY;
+
+    async function load() {
+      const { user } = await (await fetch(API + 'auth.php?action=me')).json();
+                if (!user) {
+        sessionStorage.setItem('venora_next', 'profile.html');
+        location.href = 'login.html';
+        return;
+      }
+      document.getElementById('greet').textContent = 'Hi, ' + user.name;
+            document.querySelector('.profile-head').dataset.initial = user.name.trim().charAt(0);
+      document.getElementById('email').textContent = user.email;
+
+      const res = await fetch(API + 'orders.php');
+      const { orders = [] } = await res.json();
+
+      const active = orders.filter(o => o.status !== 'cancelled');
+      const count = s => orders.filter(o => o.status === s).length;
+      const spent = active.reduce((t, o) => t + Number(o.total), 0);
+      document.getElementById('stats').innerHTML = [
+        ['Orders', orders.length], ['Processing', count('processing')],
+        ['Delivered', count('delivered')], ['Total spent', money(spent)]
+      ].map(([l, v]) => `<div class="stat"><b>${esc(v)}</b><span>${l}</span></div>`).join('');
+
+      const box = document.getElementById('orders');
+      if (!orders.length) { box.innerHTML = '<p class="muted">You have no orders yet. <a href="index.html#categories" class="lnk">Start shopping</a></p>'; return; }
+      box.innerHTML = orders.map(o => `
+        <article class="order">
+          <div class="order-top">
+            <div><strong>Order #${o.order_id}</strong><span class="muted"> · ${new Date(o.created_at.replace(' ', 'T')).toLocaleDateString()}</span></div>
+            <span class="badge ${esc(o.status)}">${esc(o.status)}</span>
+          </div>
+          <ul>${o.items.map(i => `<li><span>${esc(i.product_name)} × ${i.quantity}</span><span>${money(i.unit_price * i.quantity)}</span></li>`).join('')}</ul>
+          <div class="order-bottom">
+            <strong>Total ${money(o.total)}</strong>
+            ${o.status === 'processing' ? `<button class="btn small" data-cancel="${o.order_id}" type="button">Cancel order</button>` : ''}
+          </div>
+        </article>`).join('');
+    }
+
+    document.addEventListener('click', async e => {
+      const id = e.target.dataset && e.target.dataset.cancel;
+      if (!id) return;
+      if (!confirm('Cancel order #' + id + '?')) return;
+      const res = await fetch(API + 'orders.php?action=cancel', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order_id: Number(id) })
+      });
+      if (!res.ok) alert((await res.json()).error || 'Could not cancel the order.');
+      load();
+    });
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await fetch(API + 'auth.php?action=logout');
+      location.href = 'index.html';
+    });
+    load();
+  </script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

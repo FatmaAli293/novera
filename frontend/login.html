@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Log in | VENORA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-page">
+  <main class="auth">
+    <div class="auth-card">
+      <a href="index.html" class="logo" aria-label="VENORA">
+        <span class="logo-name">VENORA</span>
+        <span class="logo-tag">Luxury Accessories</span>
+      </a>
+      <h1>Welcome back</h1>
+      <p class="sub">Log in to your account to continue.</p>
+      <form id="authForm" novalidate>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" required>
+        </div>
+        <div class="form-msg" id="formMsg" role="alert"></div>
+        <button class="btn" type="submit">Log in</button>
+      </form>
+      <p class="alt">New here? <a href="register.html">Create an account</a></p>
+    </div>
+  </main>
+  <script>
+  const form = document.getElementById('authForm');
+  const msg = document.getElementById('formMsg');
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    msg.textContent = '';
+
+    const email = form.email.value.trim().toLowerCase();
+    const password = form.password.value;
+
+    if (!email || !password) {
+      msg.textContent = 'Please enter email and password.';
+      return;
+    }
+
+    try {
+      const res = await fetch('/venora/backend/api/auth.php?action=login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        if (data.code === 'no_account') {
+          msg.innerHTML = 'No account found for this email. <a href="register.html">Create an account first</a>.';
+        } else {
+          msg.textContent = data.error || 'Login failed.';
+        }
+        return;
+      }
+            const next = sessionStorage.getItem('venora_next');
+      sessionStorage.removeItem('venora_next');
+      location.href = next || 'index.html';
+    } catch (err) {
+      msg.textContent = 'Could not reach the server.';
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact | VENORA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/extra.css">
+  <style>
+    .vpage { max-width: 1000px; margin: 0 auto; padding: 70px 32px 90px; background: transparent; color: #fff; min-height: 0; }
+    .vpage h1 { text-align: center; font-family: 'Playfair Display', serif; font-weight: 400;
+      font-size: clamp(32px, 4vw, 52px); color: var(--gold-light); }
+    .vpage h1::after { content: ""; display: block; width: 70px; height: 1px; background: var(--gold); margin: 16px auto 0; }
+    .vpage .lead { text-align: center; max-width: 600px; margin: 26px auto 0; color: #d9d3c2; font-weight: 300; line-height: 1.8; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 40px; margin-top: 56px; }
+    .info { padding: 32px 30px; border: 1px solid rgba(201,164,92,.35); }
+    .info h3 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: 22px; color: var(--gold-light); margin-bottom: 18px; }
+    .info p { color: #d9d3c2; font-weight: 300; line-height: 1.7; margin-bottom: 14px; font-size: 14px; }
+    .info small { display: block; color: var(--gold); letter-spacing: 2.5px; font-size: 10px; text-transform: uppercase; margin-bottom: 4px; }
+    .info a:hover { color: var(--gold-light); }
+    .cform { display: flex; flex-direction: column; gap: 16px; }
+    .cform input, .cform textarea {
+      width: 100%; padding: 14px 16px; background: rgba(255,255,255,.03);
+      border: 1px solid rgba(201,164,92,.4); color: #fff; font-family: inherit; font-size: 14px;
+    }
+    .cform input::placeholder, .cform textarea::placeholder { color: #9a9486; }
+    .cform textarea { min-height: 150px; resize: vertical; }
+    .cform input:focus, .cform textarea:focus { outline: none; border-color: var(--gold-light); }
+    .cform button {
+      align-self: flex-start; padding: 13px 34px; background: var(--gold); color: var(--green);
+      border: 1px solid var(--gold); font-family: inherit; font-size: 11px; letter-spacing: 3px;
+      text-transform: uppercase; cursor: pointer;
+    }
+    .cform button:hover { background: var(--gold-light); }
+    #cMsg { color: var(--gold-light); font-size: 13px; min-height: 18px; }
+    @media (max-width: 800px) { .contact-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main class="vpage">
+    <h1>Contact Us</h1>
+    <p class="lead">Questions about a piece, an order, or a gift? We would love to hear from you.</p>
+
+    <div class="contact-grid">
+      <aside class="info">
+        <h3>Get in touch</h3>
+        <!-- غيّري البيانات دي ببياناتك الحقيقية (نفس اللي في الفوتر) -->
+        <p><small>Email</small><a href="mailto:hello@venora.com">hello@venora.com</a></p>
+        <p><small>Phone</small><a href="tel:+200000000000">+20 000 000 0000</a></p>
+        <p><small>WhatsApp</small><a href="https://wa.me/200000000000">Chat with us</a></p>
+        <p><small>Address</small>Cairo, Egypt</p>
+        <p><small>Opening hours</small>Saturday – Thursday<br>10:00 am – 8:00 pm</p>
+      </aside>
+
+      <form class="cform" id="cForm" novalidate>
+        <input type="text" name="name" placeholder="Your name" required>
+        <input type="email" name="email" placeholder="Your email" required>
+        <input type="text" name="subject" placeholder="Subject">
+        <textarea name="message" placeholder="Your message" required></textarea>
+        <button type="submit">Send message</button>
+        <div id="cMsg"></div>
+      </form>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="js/layout.js"></script>
+  <script src="js/auth-ui.js"></script>
+  <script>
+    // الفورم بيفتح برنامج الإيميل برسالة جاهزة (من غير سيرفر)
+    const TO = 'hello@venora.com'; // غيّريه بإيميلك
+    document.getElementById('cForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const f = e.target, msg = document.getElementById('cMsg');
+      const name = f.name.value.trim(), email = f.email.value.trim(), text = f.message.value.trim();
+      if (!name || !email || !text) { msg.textContent = 'Please fill in your name, email and message.'; return; }
+      const subject = encodeURIComponent(f.subject.value.trim() || 'Message from ' + name);
+      const body = encodeURIComponent(text + '\n\n— ' + name + ' (' + email + ')');
+      location.href = 'mailto:' + TO + '?subject=' + subject + '&body=' + body;
+      msg.textContent = 'Opening your email app…';
+    });
+  </script>
+    <script src="js/layout.js"></script>
+
+</body>
+</html>

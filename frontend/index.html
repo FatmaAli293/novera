@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VENORA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/extra.css">
+</head>
+<body>
+
+  <header class="header">
+    <a href="index.html" class="logo" aria-label="VENORA - Luxury Accessories">
+      <span class="logo-text">
+        <span class="logo-name">VENORA</span>
+        <span class="logo-tag">Luxury Accessories</span>
+      </span>
+    </a>
+
+    <nav class="nav">
+      <a href="index.html" class="active">Home</a>
+      <a href="category.html">Collection</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+
+    <div class="icons">
+ 
+
+  <!-- زرار Login -->
+  <a href="login.html" class="header-login" id="headerAuthBtn">Login</a>
+
+  <a href="profile.html" title="Account" aria-label="Account">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20.5c.8-3.9 3.9-6 7.5-6s6.7 2.1 7.5 6"/></svg>
+  </a>
+  <a href="cart.html" title="Cart" aria-label="Cart">
+    <svg viewBox="0 0 24 24"><path d="M6 7.5h12a1 1 0 0 1 1 1V19a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8.5a1 1 0 0 1 1-1z"/><path d="M9 10.5V7a3 3 0 0 1 6 0v3.5"/></svg>
+    <span class="cart-badge" id="cartBadge">0</span>
+  </a>
+</div>
+  </header>
+
+  <section class="hero">
+    <img class="hero-bg" src="images/hero.jpeg" alt="VENORA featured jewelry">
+
+    <!-- لمعة الألماسة: غيّري top / left لو مش مظبوطة على الخاتم -->
+    <span class="spark s1" aria-hidden="true"></span>
+    <span class="spark s2" aria-hidden="true"></span>
+    <span class="spark s3" aria-hidden="true"></span>
+
+    <div class="hero-text">
+      <span class="hero-subtitle">Jewelry with meaning</span>
+      <h1>
+        More Than Jewelry.<br>
+        <span class="hero-italic">Made to Be Yours.</span>
+      </h1>
+      <div class="line"></div>
+      <p>Timeless pieces that celebrate your story, your moments, and everything that makes you unique.</p>
+      <a href="#categories" class="btn">Discover the collection</a>
+    </div>
+  </section>
+
+  <section class="categories" id="categories">
+    <h2>Shop by Category</h2>
+    <div class="divider"><span>✦</span></div>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="f-brand">
+      <a href="index.html" class="logo" aria-label="VENORA">
+        <span class="logo-name">VENORA</span>
+        <span class="logo-tag">Luxury Accessories</span>
+      </a>
+      <p>Timeless pieces. Chosen with intention.<br>Made to be remembered.</p>
+    </div>
+
+    <div class="f-col">
+      <h4>Contact</h4>
+      <!-- غيّري البيانات دي ببياناتك الحقيقية -->
+      <p><a href="mailto:hello@venora.com">hello@venora.com</a></p>
+      <p><a href="tel:+200000000000">+20 000 000 0000</a></p>
+      <p>Cairo, Egypt</p>
+    </div>
+
+    <div class="f-col">
+      <h4>Opening hours</h4>
+      <p>Saturday – Thursday</p>
+      <p>10:00 am – 8:00 pm</p>
+      <div class="socials">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/></svg></a>
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M14 8.5h2.5V5H14a3.5 3.5 0 0 0-3.5 3.5V11H8v3.5h2.5V21H14v-6.5h2.4l.6-3.5H14V8.8c0-.2.1-.3.3-.3z"/></svg></a>
+        <a href="https://wa.me/200000000000" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M4 20l1.2-4.2A8 8 0 1 1 8.4 18.8z"/><path d="M9.5 8.5c0 3 2.5 5.5 5.5 5.5l1-1.5-2-1-.8.8c-.8-.4-1.600-1.200-2-2l.8-.8-1-2z"/></svg></a>
+      </div>
+    </div>
+
+    <p class="copy">© 2025 VENORA. All rights reserved.</p>
+  </footer>
+
+  <script src="js/cart.js"></script>
+<script src="js/app.js"></script>
+  <script src="js/auth.js"></script>
+
+</body>
+</html>
