@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your Cart — VENORA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/extra.css">
+  <style>
+/* ===== CART PAGE STYLES ===== */
+.cart-badge {
+  position: absolute;
+  top: 2px; right: 2px;
+  min-width: 16px; height: 16px;
+  background: #c9a45c;
+  color: #011b12;
+  font-size: 10px; font-weight: 600;
+  border-radius: 50%;
+  display: none;
+  place-items: center;
+  line-height: 1;
+  pointer-events: none;
+}
+.icons a { position: relative; }
+.icons a.active-icon { border-color: rgba(201,164,92,.6); color: #ecd59b; }
+
+.cart-hero {
+  position: relative;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #00110b;
+  border-bottom: 1px solid rgba(201,164,92,.35);
+}
+.cart-hero-content { text-align: center; padding: 40px 20px; }
+.cart-eyebrow {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #c9a45c;
+  margin-bottom: 12px;
+}
+.cart-hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 400;
+  font-size: clamp(36px, 5vw, 52px);
+  letter-spacing: 4px;
+  color: #ecd59b;
+  margin: 0;
+}
+
+.cart-page {
+  background: #011b12;
+  min-height: 50vh;
+  padding: 48px 20px 80px;
+  display: flex;
+  justify-content: center;
+}
+.cart-container { width: 100%; max-width: 640px; }
+
+.cart-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: rgba(255,255,255,.7);
+}
+.cart-empty .empty-icon { color: #c9a45c; opacity: .6; margin-bottom: 18px; }
+.cart-empty p { font-size: 16px; margin-bottom: 28px; letter-spacing: 1px; }
+
+.cart-panel {
+  background: rgba(0, 12, 8, .92);
+  border: 1px solid rgba(201,164,92,.35);
+  border-radius: 4px;
+  padding: 28px 28px 32px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.45);
+}
+
+.cart-item {
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  grid-template-rows: auto auto;
+  gap: 6px 16px;
+  padding: 18px 0;
+  border-bottom: 1px dashed rgba(201,164,92,.25);
+  align-items: center;
+}
+.cart-item:last-of-type { border-bottom: none; }
+
+.cart-item-img {
+  grid-row: 1 / 3;
+  width: 72px; height: 72px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(201,164,92,.3);
+  background: #00110b;
+}
+.cart-item-img img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cart-item-info { grid-column: 2; }
+.cart-item-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  font-weight: 400;
+  color: #ecd59b;
+  margin: 0 0 4px 0;
+}
+.cart-item-price {
+  font-size: 13px;
+  color: rgba(236,213,155,.7);
+  font-weight: 300;
+  margin: 0;
+}
+
+.cart-item-controls {
+  grid-column: 3;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-self: end;
+}
+
+.qty-control {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(201,164,92,.45);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.qty-btn {
+  width: 32px; height: 32px;
+  background: transparent;
+  border: none;
+  color: #c9a45c;
+  font-size: 18px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  line-height: 1;
+}
+.qty-btn:hover { background: rgba(201,164,92,.15); color: #ecd59b; }
+.qty-value {
+  min-width: 28px;
+  text-align: center;
+  font-size: 14px;
+  color: #fff;
+}
+
+.remove-btn {
+  width: 28px; height: 28px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  color: rgba(236,213,155,.55);
+  font-size: 20px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  line-height: 1;
+}
+.remove-btn:hover {
+  color: #e8a0a0;
+  border-color: rgba(232,160,160,.4);
+  background: rgba(232,160,160,.08);
+}
+
+.cart-item-line-total {
+  grid-column: 3;
+  grid-row: 2;
+  justify-self: end;
+  font-size: 14px;
+  color: #c9a45c;
+}
+
+.cart-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,164,92,.35), transparent);
+  margin: 8px 0 20px;
+}
+
+.cart-label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #c9a45c;
+  margin-bottom: 10px;
+}
+.cart-notes textarea {
+  width: 100%;
+  background: rgba(0,17,11,.6);
+  border: 1px solid rgba(201,164,92,.35);
+  border-radius: 3px;
+  color: #e9e4d8;
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  padding: 12px 14px;
+  resize: vertical;
+  min-height: 80px;
+  box-sizing: border-box;
+}
+.cart-notes textarea:focus {
+  outline: none;
+  border-color: #c9a45c;
+}
+
+.cart-summary { margin-bottom: 28px; }
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 14px;
+  color: rgba(233,228,216,.8);
+}
+.summary-row.total {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(201,164,92,.3);
+  font-size: 18px;
+  color: #ecd59b;
+  font-family: 'Playfair Display', serif;
+}
+
+.cart-actions {
+  display: flex;
+  gap: 14px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+.btn-outline {
+  background: transparent !important;
+  border: 1px solid rgba(201,164,92,.5) !important;
+  color: #c9a45c !important;
+}
+.btn-outline:hover {
+  background: rgba(201,164,92,.12) !important;
+  color: #ecd59b !important;
+}
+
+@media (max-width: 600px) {
+  .cart-panel { padding: 20px 16px 24px; }
+  .cart-item {
+    grid-template-columns: 60px 1fr;
+    grid-template-rows: auto auto auto;
+  }
+  .cart-item-img { width: 60px; height: 60px; }
+  .cart-item-controls {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    justify-self: start;
+    margin-top: 8px;
+  }
+  .cart-item-line-total {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: end;
+  }
+}
+</style>
+</head>
+<body>
+
+  <header class="header">
+    <a href="index.html" class="logo" aria-label="VENORA - Luxury Accessories">
+      <span class="logo-text">
+        <span class="logo-name">VENORA</span>
+        <span class="logo-tag">Luxury Accessories</span>
+      </span>
+    </a>
+
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="collection.html">Collection</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+
+    <div class="icons">
+      <a href="search.html" title="Search" aria-label="Search">
+        <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg>
+      </a>
+      <a href="login.html" title="Account" aria-label="Account">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20.5c.8-3.9 3.9-6 7.5-6s6.7 2.1 7.5 6"/></svg>
+      </a>
+      <a href="cart.html" title="Cart" aria-label="Cart" class="active-icon">
+        <svg viewBox="0 0 24 24"><path d="M6 7.5h12a1 1 0 0 1 1 1V19a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8.5a1 1 0 0 1 1-1z"/><path d="M9 10.5V7a3 3 0 0 1 6 0v3.5"/></svg>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </a>
+    </div>
+  </header>
+
+  <section class="cart-hero">
+    <div class="cart-hero-overlay"></div>
+    <div class="cart-hero-content">
+      <span class="cart-eyebrow">REVIEW & CONFIRM</span>
+      <h1>YOUR CART</h1>
+    </div>
+  </section>
+
+  <main class="cart-page">
+    <div class="cart-container">
+
+      <div class="cart-empty" id="cartEmpty" hidden>
+  <div class="empty-icon">
+    <svg viewBox="0 0 24 24" width="48" height="48"><path d="M6 7.5h12a1 1 0 0 1 1 1V19a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8.5a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M9 10.5V7a3 3 0 0 1 6 0v3.5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+  </div>
+  <p>Your cart is empty</p>
+  <a href="index.html" class="btn">Continue Shopping</a>
+</div>
+
+      <div class="cart-panel" id="cartPanel">
+        <div class="cart-items" id="cartItems"></div>
+
+        <div class="cart-divider"></div>
+
+        <div class="cart-notes">
+          <label class="cart-label">NOTES</label>
+          <textarea id="cartNotes" placeholder="e.g. gift wrap, special request..." rows="3"></textarea>
+        </div>
+
+        <div class="cart-divider"></div>
+
+        <div class="cart-summary">
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span id="cartSubtotal">$0.00</span>
+          </div>
+          <div class="summary-row total">
+            <span>Total</span>
+            <span id="cartTotal">$0.00</span>
+          </div>
+        </div>
+
+        <div class="cart-actions">
+          <button type="button" class="btn btn-outline" id="clearCartBtn">Clear Cart</button>
+          <button type="button" class="btn" id="checkoutBtn">Place Order</button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="f-brand">
+      <a href="index.html" class="logo" aria-label="VENORA">
+        <span class="logo-name">VENORA</span>
+        <span class="logo-tag">Luxury Accessories</span>
+      </a>
+      <p>Timeless pieces. Chosen with intention.<br>Made to be remembered.</p>
+    </div>
+
+    <div class="f-col">
+      <h4>Contact</h4>
+      <p><a href="mailto:hello@venora.com">hello@venora.com</a></p>
+      <p><a href="tel:+200000000000">+20 000 000 0000</a></p>
+      <p>Cairo, Egypt</p>
+    </div>
+
+    <div class="f-col">
+      <h4>Opening hours</h4>
+      <p>Saturday – Thursday</p>
+      <p>10:00 am – 8:00 pm</p>
+      <div class="socials">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6"/></svg></a>
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M14 8.5h2.5V5H14a3.5 3.5 0 0 0-3.5 3.5V11H8v3.5h2.5V21H14v-6.5h2.4l.6-3.5H14V8.8c0-.2.1-.3.3-.3z"/></svg></a>
+        <a href="https://wa.me/200000000000" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M4 20l1.2-4.2A8 8 0 1 1 8.4 18.8z"/><path d="M9.5 8.5c0 3 2.5 5.5 5.5 5.5l1-1.5-2-1-.8.8c-.8-.4-1.600-1.200-2-2l.8-.8-1-2z"/></svg></a>
+      </div>
+    </div>
+
+    <p class="copy">© 2025 VENORA. All rights reserved.</p>
+  </footer>
+
+  <script src="js/cart.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

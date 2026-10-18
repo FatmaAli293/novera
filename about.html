@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About | VENORA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/extra.css">
+  <style>
+    .vpage { max-width: 1000px; margin: 0 auto; padding: 70px 32px 90px; background: transparent; color: #fff; min-height: 0; }
+
+    .vpage h1 {
+      display: flex;
+      flex-direction: column;
+      align-items: center;          /* العنوان والخط الاتنين في نص الصفحة بالظبط */
+      text-align: center;
+      font-family: 'Playfair Display', serif; font-weight: 400;
+      font-size: clamp(32px, 4vw, 52px); color: var(--gold-light);
+      word-spacing: 18px;
+    }
+   
+
+    .vpage .lead { text-align: center; max-width: 680px; margin: 44px auto 0; color: #d9d3c2;
+      font-weight: 300; line-height: 1.9; font-size: 16px; }
+
+    .values { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 72px; }
+    .value { padding: 32px 26px; border: 1px solid rgba(201,164,92,.35); background: rgba(255,255,255,.02); }
+    .value h3 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: 22px; color: var(--gold-light); }
+    .value p { margin-top: 12px; color: #d9d3c2; font-weight: 300; line-height: 1.8; font-size: 14px; }
+
+    .story { margin-top: 84px; text-align: center; }
+    .story h2 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: 30px; color: var(--gold-light); }
+    .story p { max-width: 720px; margin: 18px auto 0; color: #d9d3c2; font-weight: 300; line-height: 1.9; }
+
+    .cta { text-align: center; margin-top: 56px; }
+
+    @media (max-width: 800px) { .values { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main class="vpage">
+    <h1>About VENORA</h1>
+    <p class="lead">
+      VENORA creates luxury accessories made to be worn, gifted, and remembered.
+      Every piece is chosen with intention, from the first sketch to the final polish.
+    </p>
+
+    <section class="values">
+      <div class="value">
+        <h3>Crafted with care</h3>
+        <p>Rings, necklaces, bracelets, earrings and watches finished by hand, with attention to every small detail.</p>
+      </div>
+      <div class="value">
+        <h3>Timeless design</h3>
+        <p>Classic shapes that never go out of style, made to be worn every day and kept for years.</p>
+      </div>
+      <div class="value">
+        <h3>Made to be yours</h3>
+        <p>Jewelry with meaning, whether it marks a milestone, a gift, or a quiet moment for yourself.</p>
+      </div>
+    </section>
+
+    <section class="story">
+      <h2>Our story</h2>
+      <p>
+        VENORA began with a simple idea: jewelry should feel personal. We bring together
+        refined materials and thoughtful design to create pieces that celebrate your story
+        and everything that makes you unique.
+      </p>
+    </section>
+
+    <div class="cta">
+      <a href="category.html" class="btn">Discover the collection</a>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="js/layout.js"></script>
+  
+</body>
+</html>

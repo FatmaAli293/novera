@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Create account | VENORA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-page">
+  <main class="auth">
+    <div class="auth-card">
+      <a href="index.html" class="logo" aria-label="VENORA">
+        <span class="logo-name">VENORA</span>
+        <span class="logo-tag">Luxury Accessories</span>
+      </a>
+      <h1>Create account</h1>
+      <p class="sub">Join VENORA to track your orders.</p>
+      <form id="authForm" novalidate>
+        <div class="field">
+          <label for="name">Name</label>
+          <input id="name" name="name" type="text" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" autocomplete="new-password" required minlength="4">
+        </div>
+        <div class="field">
+          <label for="confirm">Confirm password</label>
+          <input id="confirm" name="confirm" type="password" autocomplete="new-password" required>
+        </div>
+        <div class="form-msg" id="formMsg" role="alert"></div>
+        <button class="btn" type="submit">Create account</button>
+      </form>
+      <p class="alt">Already have an account? <a href="login.html">Log in</a></p>
+    </div>
+  </main>
+  <script>
+  const form = document.getElementById('authForm');
+  const msg = document.getElementById('formMsg');
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    msg.textContent = '';
+
+    const full_name = form.name.value.trim();
+    const email = form.email.value.trim().toLowerCase();
+    const password = form.password.value;
+    const confirm = form.confirm.value;
+
+    if (!full_name || !email || !password) {
+      msg.textContent = 'Please fill all fields.';
+      return;
+    }
+    if (password !== confirm) {
+      msg.textContent = 'Passwords do not match.';
+      return;
+    }
+    if (password.length < 8) {
+      msg.textContent = 'Password must be at least 8 characters.';
+      return;
+    }
+
+    try {
+      const res = await fetch('/venora/backend/api/auth.php?action=register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ full_name, email, password })
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        msg.textContent = data.error || 'Could not create the account.';
+        return;
+      }
+            const next = sessionStorage.getItem('venora_next');
+      sessionStorage.removeItem('venora_next');
+      location.href = next || 'index.html';
+    } catch (err) {
+      msg.textContent = 'Could not reach the server.';
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Collection | VENORA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/extra.css">
+  <style>
+    /* تنسيق الكارت + أنيميشن الإضاءة + شريط السلة */
+    .s-viewport { overflow: visible; clip-path: inset(-44px -14px); }
+    .slide { position: relative; cursor: pointer; transition: transform .4s cubic-bezier(.2, .8, .2, 1), box-shadow .4s ease, border-color .4s ease; }
+    .slide img { transition: filter .5s ease; }
+    .slide:hover, .slide.active { transform: translateY(-10px); border-color: var(--gold); box-shadow: 0 0 0 1px rgba(201,164,92,.45), 0 22px 44px rgba(0,0,0,.5), 0 0 36px rgba(201,164,92,.28); }
+    .slide:hover img, .slide.active img { filter: brightness(1.07) saturate(1.05); }
+    .slide:active { transform: translateY(-4px) scale(.992); }
+
+    .slide-info { padding: 20px 22px 24px; }
+    .slide-info h3 { font-size: 21px; letter-spacing: .3px; }
+    .slide-desc { margin-top: 8px; font-size: 12.5px; }
+    .price { margin-top: 14px; font-family: 'Playfair Display', serif; font-size: 22px; font-style: italic; letter-spacing: .5px; color: var(--gold-light); }
+    .price::before { display: none; }
+    .price small { margin-left: 6px; font-family: 'Lato', sans-serif; font-style: normal; font-size: 10px; letter-spacing: 2.5px; color: var(--gold); }
+    .add-btn { display: inline-flex; align-items: center; gap: 10px; width: auto; margin: 16px auto 0; padding: 11px 30px; border: 1px solid var(--gold); border-radius: 999px; background: transparent; color: var(--gold-light); font-size: 11px; font-weight: 400; letter-spacing: 3px; transition: background .3s, color .3s, box-shadow .3s; }
+    .add-btn::before { content: "+"; font-size: 16px; line-height: 1; margin-top: -1px; }
+    .add-btn:hover { background: var(--gold); color: var(--green); box-shadow: 0 0 18px rgba(201,164,92,.4); }
+
+    .cart-bar { position: fixed; left: 50%; bottom: 24px; z-index: 90; width: min(640px, 92vw); display: flex; justify-content: space-between; align-items: center; padding: 16px 26px; background: var(--gold); color: var(--green); font-size: 12px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; transform: translate(-50%, 140%); transition: transform .45s cubic-bezier(.4, 0, .2, 1); box-shadow: 0 12px 30px rgba(0,0,0,.35); }
+    .cart-bar.show { transform: translate(-50%, 0); }
+    .cart-bar.pop { animation: pop .35s ease; }
+    @keyframes pop { 50% { transform: translate(-50%, -6px); } }
+    .cart-bar .bar-link { border-bottom: 1px solid var(--green); padding-bottom: 2px; }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main class="collection">
+    <h1 id="title">The Collection</h1>
+
+    <div class="slider" id="slider">
+      <button class="arrow" id="prev" type="button" aria-label="Previous">
+        <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <div class="s-viewport">
+        <div class="s-track" id="track"><p class="muted">Loading...</p></div>
+      </div>
+      <button class="arrow" id="next" type="button" aria-label="Next">
+        <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <a class="cart-bar" id="cartBar" href="cart.html" aria-label="View cart">
+    <span id="barCount"></span><span id="barTotal"></span><span class="bar-link">View cart</span>
+  </a>
+
+  <script src="js/layout.js"></script>
+  <script src="js/auth.js"></script>
+
+  <script>
+    const API = '/venora/backend/api/';
+    const CURRENCY = 'EGP'; // غيّري العملة هنا
+    const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const money = n => Number(n).toLocaleString(undefined, { maximumFractionDigits: 2 }) + ' ' + CURRENCY;
+
+    const slider = document.getElementById('slider');
+    const track = document.getElementById('track');
+    const prev = document.getElementById('prev');
+    const next = document.getElementById('next');
+    let index = 0, count = 0;
+
+    const perView = () => parseInt(getComputedStyle(slider).getPropertyValue('--per-view')) || 3;
+    const maxIndex = () => Math.max(0, count - perView());
+
+    function update() {
+      index = Math.min(index, maxIndex());
+      const first = track.querySelector('.slide');
+      if (first) {
+        const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+        track.style.transform = 'translateX(' + (-index * (first.offsetWidth + gap)) + 'px)';
+      }
+      prev.disabled = index <= 0;
+      next.disabled = index >= maxIndex();
+      const hide = count <= perView();
+      prev.style.visibility = next.style.visibility = hide ? 'hidden' : 'visible';
+    }
+    prev.addEventListener('click', () => { index = Math.max(0, index - 1); update(); });
+    next.addEventListener('click', () => { index = Math.min(maxIndex(), index + 1); update(); });
+    window.addEventListener('resize', update);
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft') prev.click();
+      if (e.key === 'ArrowRight') next.click();
+    });
+        // توزيع المنتجات بالتبادل بين الأنواع: خاتم، سلسلة، سوار...
+    function interleave(list) {
+      const groups = new Map();
+      list.forEach(p => {
+        if (!groups.has(p.category_id)) groups.set(p.category_id, []);
+        groups.get(p.category_id).push(p);
+      });
+      const queues = [...groups.values()];
+      const out = [];
+      while (queues.some(q => q.length)) {
+        queues.forEach(q => { if (q.length) out.push(q.shift()); });
+      }
+      return out;
+    }
+
+        async function load() {
+      const id = new URLSearchParams(location.search).get('id');
+      try {
+        const cats = await (await fetch(API + 'categories.php')).json();
+        const catById = pid => cats.find(c => String(c.category_id) === String(pid)) || {};
+
+        let url = API + 'products.php';          // بدون id: كل المنتجات
+        if (id) {
+          const cat = cats.find(c => String(c.category_id) === id);
+          if (!cat) { track.innerHTML = '<p class="muted">Category not found.</p>'; return; }
+          document.title = cat.category_name + ' | VENORA';
+          document.getElementById('title').textContent = 'The ' + cat.category_name + ' Collection';
+          url += '?category_id=' + encodeURIComponent(id);
+        } else {
+          document.title = 'Collection | VENORA';
+          document.getElementById('title').textContent = 'The Collection';
+        }
+
+                let products = await (await fetch(url)).json();
+        if (!id) products = interleave(products);   // صفحة Collection بس
+        count = products.length;
+        if (!count) { track.innerHTML = '<p class="muted">No products yet.</p>'; update(); return; }
+
+        track.innerHTML = products.map(p => {
+          const name = p.product_name || p.name || p.title || ('Product #' + p.product_id);
+          const img = p.image_url || p.image || p.img || catById(p.category_id).image_url || '';
+          return `
+            <article class="slide">
+              <img src="${esc(img)}" alt="${esc(name)}">
+              <div class="slide-info">
+                <h3>${esc(name)}</h3>
+                <p class="slide-desc">${esc(p.description || p.desc || '')}</p>
+                <span class="price">${p.price != null ? Number(p.price).toLocaleString(undefined, { maximumFractionDigits: 2 }) + '<small>' + CURRENCY + '</small>' : ''}</span>
+                <button class="add-btn" type="button" data-cart-add
+                  data-id="${p.product_id}" data-name="${esc(name)}" data-price="${p.price}" data-image="${esc(img)}">Add to cart</button>
+              </div>
+            </article>`;
+        }).join('');
+        update();
+      } catch (err) {
+        track.innerHTML = '<p class="muted">Could not load products.</p>';
+      }
+    }
+
+    // ---------- السلة (محفوظة في المتصفح) ----------
+    const CART_KEY = 'venora_cart';
+    const readCart = () => { try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch (e) { return []; } };
+    const writeCart = c => localStorage.setItem(CART_KEY, JSON.stringify(c));
+    const bar = document.getElementById('cartBar');
+
+    function refreshCart(pulse) {
+      const cart = readCart();
+      const n = cart.reduce((t, i) => t + i.qty, 0);
+      const total = cart.reduce((t, i) => t + i.price * i.qty, 0);
+
+      const icon = document.querySelector('.icons a[href="cart.html"]');
+      if (icon) {
+        let b = icon.querySelector('.cart-badge');
+        if (!n) { if (b) b.remove(); }
+        else { if (!b) { b = document.createElement('span'); b.className = 'cart-badge'; icon.appendChild(b); } b.textContent = n; }
+      }
+      if (!n) { bar.classList.remove('show'); return; }
+      document.getElementById('barCount').textContent = n + (n === 1 ? ' item' : ' items');
+      document.getElementById('barTotal').textContent = money(total);
+      bar.classList.add('show');
+      if (pulse) { bar.classList.remove('pop'); void bar.offsetWidth; bar.classList.add('pop'); }
+    }
+
+    track.addEventListener('click', e => {
+      const card = e.target.closest('.slide');
+      if (card) {
+        track.querySelectorAll('.slide.active').forEach(s => s.classList.remove('active'));
+        card.classList.add('active');
+      }
+      const btn = e.target.closest('[data-cart-add]');
+      if (!btn) return;
+      const d = btn.dataset, id = Number(d.id), cart = readCart();
+      const found = cart.find(i => i.id === id);
+      if (found) found.qty += 1;
+      else cart.push({ id, name: d.name, price: Number(d.price), image: d.image, qty: 1 });
+      writeCart(cart);
+      refreshCart(true);
+    });
+
+    // الهيدر بيتحمّل بعد الصفحة بشوية، فنحدّث العداد كمان بعد ما يوصل
+    refreshCart(false);
+    setTimeout(() => refreshCart(false), 600);
+    setTimeout(() => refreshCart(false), 1600);
+
+    load();
+  </script>
+  <script src="js/auth.js"></script>
+</body>
+</html>
